@@ -70,12 +70,13 @@ const displayTasks = async (filteredTasks = tasks) => {
 
   filteredTasks.forEach((task) => {
     const taskDiv = document.createElement("div");
+    taskDiv.className = `task-item ${task.completed ? "task-completed" : ""}`;
     taskDiv.classList.add("task-item");
     taskDiv.setAttribute("data-task-id", task.id);
 
     taskDiv.innerHTML = `
       <div class="task-content">
-        <span>${task.title}</span>
+        <span >${task.title}</span>
        
       
       </div>
