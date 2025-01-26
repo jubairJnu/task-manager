@@ -28,38 +28,43 @@ document
 
 // save task
 
-async function saveTask(task) {
+const saveTask = async (task) => {
   localStorage.setItem("tasks", JSON.stringify(task));
-}
+};
 
 // add task
 
-async function addTask(task) {
-  if (!task.title || !task.priority) {
-    alert("Please fill in all fields");
-    return;
-  }
+const addTask = async (task) => {
+  try {
+    if (!task.title || !task.priority) {
+      alert("Please fill in all fields");
+      return;
+    }
 
-  if (tasks.some((t) => t.title === task.title)) {
-    alert("Task already exists");
-    return;
+    if (tasks.some((t) => t.title === task.title)) {
+      alert("Task already exists");
+      return;
+    }
+    tasks.push(task);
+    await saveTask(tasks);
+    await displayTasks();
+  } catch (err) {
+    console.log(err);
+    alert("An error occurred. Please try again.");
   }
-  tasks.push(task);
-  await saveTask(tasks);
-  await displayTasks();
-}
+};
 
 // delete task
 
-async function deleteTask(id) {
+const deleteTask = async (id) => {
   const index = tasks.findIndex((task) => task.id === id);
   tasks.splice(index, 1);
   await saveTask(tasks);
   await displayTasks();
-}
+};
 
 // display task
-function displayTasks(filteredTasks = tasks) {
+const displayTasks = async (filteredTasks = tasks) => {
   const taskList = document.getElementById("taskList");
   taskList.innerHTML = "";
 
@@ -98,10 +103,10 @@ function displayTasks(filteredTasks = tasks) {
 
     taskList.appendChild(taskDiv);
   });
-}
+};
 
 // Filter tasks
-function filterTasks() {
+const filterTasks = async () => {
   const filterValue = document.getElementById("filterDropdown").value;
   const sortValue = document.getElementById("sortDropdown").value;
   const searchValue = document
@@ -137,7 +142,7 @@ function filterTasks() {
   }
 
   displayTasks(filteredTasks);
-}
+};
 
 document
   .getElementById("filterDropdown")
@@ -150,18 +155,18 @@ displayTasks();
 
 // toggle completion
 
-function toggleCompletion(taskId) {
+const toggleCompletion = async (taskId) => {
   const taskIndex = tasks.findIndex((task) => task.id === taskId);
   if (taskIndex > -1) {
     tasks[taskIndex].completed = !tasks[taskIndex].completed;
     saveTask(tasks);
     displayTasks();
   }
-}
+};
 
 // edit task
 
-function toggleEdit(taskId) {
+const toggleEdit = async (taskId) => {
   console.log(taskId, "toggleEdit: taskId");
 
   const task = tasks.find((t) => t.id === taskId.toString());
@@ -204,9 +209,9 @@ function toggleEdit(taskId) {
       </div>
     </div>
   `;
-}
+};
 
-function saveEdit(taskId) {
+const saveEdit = async (taskId) => {
   const index = tasks.findIndex((t) => t.id === taskId);
 
   if (index === -1) {
@@ -220,9 +225,9 @@ function saveEdit(taskId) {
 
   localStorage.setItem("tasks", JSON.stringify(tasks));
   displayTasks();
-}
+};
 
-function cancelEdit(taskId) {
+const cancelEdit = async (taskId) => {
   const taskElement = document.querySelector(
     `.task-item[data-task-id="${taskId}"]`
   );
@@ -232,4 +237,4 @@ function cancelEdit(taskId) {
   } else {
     displayTasks();
   }
-}
+};
